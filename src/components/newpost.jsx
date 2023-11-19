@@ -1,3 +1,20 @@
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
+
+const firebaseConfig = {
+  databaseURL: "https://blog-edc4e-default-rtdb.europe-west1.firebasedatabase.app/",
+  apiKey: "AIzaSyDwtaEAUW63mFFJowwi8VGHVm_BhUW26c4",
+  authDomain: "blog-edc4e.firebaseapp.com",
+  projectId: "blog-edc4e",
+  storageBucket: "blog-edc4e.appspot.com",
+  messagingSenderId: "915406206864",
+  appId: "1:915406206864:web:5b914ef511e614671a2515",
+  measurementId: "G-HLRCHLPFK0"
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+
 export function NewPost() {
   return (
         <form className="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
