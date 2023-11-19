@@ -1,8 +1,20 @@
-import { useState, useContext,useEffect } from "react";
+import { useState,useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import React, { createContext } from 'react';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs } from 'firebase/firestore/lite';
 
-export const PostContext = createContext();
+const firebaseConfig = {
+  apiKey: "AIzaSyB2yyhncj3t7lUVN0Js_c8IzXkIPebzS78",
+  authDomain: "personal-blog-c9424.firebaseapp.com",
+  projectId: "personal-blog-c9424",
+  storageBucket: "personal-blog-c9424.appspot.com",
+  messagingSenderId: "48943337688",
+  appId: "1:48943337688:web:26a1ea2e370b1c6f0207ad",
+  measurementId: "G-MP9XZJN697"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 export function NewPost() {
     const [posts, setPosts] = useState([]); // Renamed `post` to `posts` for clarity
@@ -23,6 +35,7 @@ export function NewPost() {
         setTitle("");
         setImage("");
         setContent("");
+        navigate("/")
     }
 
     useEffect(() => {
@@ -30,7 +43,6 @@ export function NewPost() {
     }, [posts]); // Will log whenever `posts` changes
 
     return (
-      <PostContext.Provider value={{posts, handleSumt}}>
       <form className="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-md" onSubmit={handleSumt}>
         <h1 className="text-3xl font-semibold mb-4">New Post</h1>
         <div className="mb-4">
@@ -80,6 +92,5 @@ export function NewPost() {
           Publish
         </button>
         </form>
-      </PostContext.Provider>
     );
   }  
