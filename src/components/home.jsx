@@ -44,10 +44,9 @@ export function Home() {
           create new post
         </Link>
       </div>
-      <div className="flex flex-wrap justify-center">
+      <div className="flex flex-col">
         {posts.map((post) => (
-          <div key={post.id} className="border border-solid border-black w-fit p-5 m-5">
-            <img src={post.imageUrl} alt="Blog" className="max-w-xs" />
+          <div key={post.id} className="border border-solid border-black p-5 m-5">
             <div className="flex items-center justify-between my-4">
               <h1 className="text-2xl font-bold">{post.title}</h1>
               <Link to={`/post/${post.id}`} className="bg-sky-800 p-3 text-white rounded-md hover:bg-sky-500">
