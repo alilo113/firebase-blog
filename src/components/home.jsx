@@ -35,38 +35,37 @@ export function Home() {
   }, []);
 
   return (
-    <>
-      <div className="text-white bg-zinc-900 flex items-center justify-between p-5">
-        <h1 className="text-xl">Personal Blog</h1>
-        <Link to={'/newpost'} className="hover:underline">
-          Create New Post
-        </Link>
-      </div>
-      <div className="flex flex-col justify-between">
-        {posts.map((post) => (
-          <div key={post.id} className="border border-solid border-black p-5 m-5 flex">
-            {post.imageUrl && (
+    <div className="bg-gray-100 min-h-screen">
+      <nav className="bg-blue-500 text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Personal Blog</h1>
+          <Link to={'/newpost'} className="hover:underline">
+            Create New Post
+          </Link>
+        </div>
+      </nav>
+      {posts.map((post) => (
+            <div key={post.id} className="border border-solid border-gray-300 p-4 rounded-md flex">
+              {post.imageUrl && (
+                <div className="mb-4">
+                  <img src={post.imageUrl} alt={post.title} className="max-w-xs h-auto rounded-md" />
+                </div>
+              )}
               <div>
-                <img src={post.imageUrl} alt={post.title} className="max-w-xs mb-4" />
-              </div>
-            )}
-            <div className="flex flex-col justify-between ml-4 flex-grow">
-              <div>
-                <h1 className="text-2xl font-bold mb-2">{post.title}</h1>
+                <h1 className="text-xl font-semibold mb-2">{post.title}</h1>
                 <p className="text-gray-600 mb-4">{post.summary}</p>
               </div>
-              <div className="flex items-center justify-end">
+              <div className="flex justify-end">
                 <Link
                   to={`/post/${post.id}`}
-                  className="bg-sky-800 p-3 text-white rounded-md hover:bg-sky-500"
+                  className="text-blue-600 hover:underline"
                 >
-                  Learn More
+                  Read more
                 </Link>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
-    </>
-  );  
+          ))}
+        </div>
+  );
+  
 }
