@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set } from "firebase/database";
-import { getStorage, ref as storageRef, uploadBytes } from "firebase/storage";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL  } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 
 const firebaseConfig = {
@@ -18,6 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export function NewPost() {
+  const [summary, setSummary] = useState("")
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [image, setImage] = useState(null);
@@ -28,29 +29,21 @@ export function NewPost() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (title && content) {
+    if (title && content && image) {
       const postsRef = ref(db, "posts");
       const newPostRef = push(postsRef);
-  
+      
+      const imageRef = storageRef(storage, `images/${image.name}`);
+      uploadBytes(imageRef, image);
+      const downloadURL = await getDownloadURL(imageRef);
+
       if (newPostRef) {
-        // Set up post data
         const postData = {
           title: title,
           content: content,
+          summary: summary,
+          imageUrl: downloadURL
         };
-  
-        if (image) {
-          // If an image is selected, upload it first
-          const imageRef = storageRef(storage, `images/${image.name}`);
-          try {
-            await uploadBytes(imageRef, image);
-            console.log("Image uploaded successfully!");
-            const downloadURL = await getDownloadURL(imageRef);
-            postData.imageUrl = downloadURL; // Add image URL to post data
-          } catch (error) {
-            console.error("Error uploading image:", error);
-          }
-        }
   
         // Push post data to Firebase
         await set(newPostRef, postData);
@@ -94,6 +87,21 @@ export function NewPost() {
         <input
           onChange={(e) => setImage(e.target.files[0])}
           type="file"
+          id="image"
+          name="image"
+          accept="image/*"
+          className="w-full border rounded-md py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label className="block text-gray-700 font-semibold mb-2">
+          Summary
+        </label>
+        <input
+          value={summary}
+          onChange={(e) => setSummary(e.target.value)}
+          type="text"
+          placeholder="Enter a summary here"
           id="image"
           name="image"
           accept="image/*"
