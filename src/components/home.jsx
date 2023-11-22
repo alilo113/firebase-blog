@@ -45,27 +45,27 @@ export function Home() {
         </div>
       </nav>
       {posts.map((post) => (
-            <div key={post.id} className="border border-solid border-gray-300 p-4 rounded-md flex">
-              {post.imageUrl && (
-                <div className="mb-4">
-                  <img src={post.imageUrl} alt={post.title} className="max-w-xs h-auto rounded-md" />
-                </div>
-              )}
-              <div>
-                <h1 className="text-xl font-semibold mb-2">{post.title}</h1>
-                <p className="text-gray-600 mb-4">{post.summary}</p>
-              </div>
-              <div className="flex justify-end">
-                <Link
-                  to={`/post/${post.id}`}
-                  className="text-blue-600 hover:underline"
-                >
-                  Read more
-                </Link>
-              </div>
-            </div>
-          ))}
+      <div key={post.id} className="m-3 w-fit border border-solid border-gray-300 p-4 flex flex-wrap md:flex-nowrap">
+        {post.imageUrl && (
+        <div className="mb-4 mr-4 flex-shrink-0">
+          <img src={post.imageUrl} alt={post.title} className="max-w-xs h-auto rounded-md" />
         </div>
+        )}
+        <div className="flex flex-grow flex-col">
+          <h1 className="text-xl font-semibold mb-2">{post.title}</h1>
+          <p className="text-gray-600 mb-10">{post.summary}</p>
+        <div className="flex justify-end">
+          <Link
+          to={`/post/${post.id}`}
+          className="text-blue-600 hover:underline mt-9"
+          >
+            Read more
+          </Link>
+          </div>
+        </div>
+        </div>
+        ))}
+    </div>
   );
   
 }
