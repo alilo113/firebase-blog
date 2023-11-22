@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, push, set } from "firebase/database";
-import { getStorage } from "firebase/storage"
+import { getStorage, ref as storageRef, uploadBytes } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
 
 const firebaseConfig = {
@@ -17,41 +17,56 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const db = getDatabase(app)
-const reference = ref(db, "posts/" + crypto.randomUUID());  
-  
-const storage = getStorage()
-
 export function NewPost() {
   const [title, setTitle] = useState("");
-  const [image, setImage] = useState(null);
   const [content, setContent] = useState("");
-  const nav = useNavigate()
+  const [image, setImage] = useState(null);
+
+  const nav = useNavigate();
+  const db = getDatabase(app);
+  const storage = getStorage(app);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (title && content) {
       const postsRef = ref(db, "posts");
       const newPostRef = push(postsRef);
-    
-    if (newPostRef) {
-      await set(newPostRef, {
-        title: title,
-        content: content,
-        // Add other post properties like image URL if needed
-    });
-          
-    setTitle("");
-    setContent("");
-    nav("/");
-    } else {
-      console.log("Failed to create a new post reference.");
-    }
+  
+      if (newPostRef) {
+        // Set up post data
+        const postData = {
+          title: title,
+          content: content,
+        };
+  
+        if (image) {
+          // If an image is selected, upload it first
+          const imageRef = storageRef(storage, `images/${image.name}`);
+          try {
+            await uploadBytes(imageRef, image);
+            console.log("Image uploaded successfully!");
+            const downloadURL = await getDownloadURL(imageRef);
+            postData.imageUrl = downloadURL; // Add image URL to post data
+          } catch (error) {
+            console.error("Error uploading image:", error);
+          }
+        }
+  
+        // Push post data to Firebase
+        await set(newPostRef, postData);
+  
+        setTitle("");
+        setContent("");
+        setImage(null);
+        nav("/");
+      } else {
+        console.log("Failed to create a new post reference.");
+      }
     } else {
       console.log("Please provide a title and content for the post.");
     }
-  };
-  
+  };    
+
   return (
     <form
       className="max-w-md mx-auto p-6 bg-gray-100 rounded-lg shadow-md"
@@ -77,8 +92,7 @@ export function NewPost() {
           Image
         </label>
         <input
-          value={image}
-          onChange={(e) => setImage(e.target.value)}
+          onChange={(e) => setImage(e.target.files[0])}
           type="file"
           id="image"
           name="image"
@@ -106,5 +120,5 @@ export function NewPost() {
         Publish
       </button>
     </form>
-  );  
-}  
+  );
+}
